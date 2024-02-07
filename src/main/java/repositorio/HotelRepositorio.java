@@ -32,36 +32,51 @@ public class HotelRepositorio {
 		setIndex(indice);
 	}
 	
-	public int procurarIndex(String nome) {
-		int position = 0;
+	public void procurarHotelMaisBarato(String tipoUsuario, int diaSemana, int fds) {
+		String hotelMaisBarato = null;
+		double valorHotel = 1000.0;
+		double soma;
+		int estrelaHotel = 0;
+		int estrela;
+		int count = 0;
 		
-		for (Hotel hotel : hoteis) {
-			try {
-				if (hotel.getNome().toLowerCase().contains(nome.toLowerCase())) {
+		do {
+			if (hoteis[count] != null) {
+				if (tipoUsuario.toLowerCase().equals("regular")) {
+					double valorSemana = hoteis[count].getTarifaSemanaNormal() * diaSemana;
+					double valorFds = hoteis[count].getTarifaFDSNormal() * fds;
+					
+					soma = valorSemana + valorFds;
+					estrela = hoteis[count].getEstrelas();
+					
+				}
+				else if (tipoUsuario.toLowerCase().equals("vip")) {
+					double valorSemana = hoteis[count].getTarifaSemanaVip() * diaSemana;
+					double valorFds = hoteis[count].getTarifaFDSVip() * fds;
+					
+					soma = valorSemana + valorFds;
+					estrela = hoteis[count].getEstrelas();	
+				}
+				else {
+					System.out.println("Tipo de Usuário desconhecido!");
 					break;
 				}
 				
-				position++;
-			} catch (Exception e) {
-				position = -1;
-				break;
+				if ((soma < valorHotel) && (estrela > estrelaHotel)) {
+					valorHotel = soma;
+					estrelaHotel = estrela;
+					hotelMaisBarato = hoteis[count].getNome();
+				}
+				
 			}
-		}
+			
+			count++;
+			
+		} while (hoteis[count] != null);
 		
-		return position;
-	}
-	
-	public void procurar(String nome) {
-		int position = procurarIndex(nome);
-		
-		if (position != -1) {
-			Hotel hotel = hoteis[position];
-			System.out.println(hotel.getNome());
-			System.out.println(hotel.getEstrelas() + " estrelas");
-		}
-		else {
-			System.out.println("Hotel não encontrado");
-		}
+		System.out.println(hotelMaisBarato);
+		System.out.println(valorHotel);
+		System.out.println(estrelaHotel);
 	}
 	
 	
